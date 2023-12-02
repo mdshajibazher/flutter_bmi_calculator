@@ -10,6 +10,13 @@ const textValueStyle = TextStyle(
   fontSize: 40,
 );
 
+const resultTextStyle = TextStyle(
+    letterSpacing: 1.2,
+    fontSize: 25,
+    fontWeight: FontWeight.bold,
+    color: Colors.white
+);
+
 abstract final class BMI{
   static const String underWeightSevere = 'Underweight (Severe thinness)';
   static const String underWeightModerate = 'Underweight (Moderate thinness)';

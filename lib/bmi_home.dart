@@ -51,15 +51,14 @@ class _BmiHomeState extends State{
                   weightValue = newValue;
                 });
               }
-          )
+          ),
+          Expanded( child: BmiResult(color: color,bmi: bmi,status: status,)),
         ],
       ),
     );
   }
 
 }
-
-
 
 class BmiSlider extends StatelessWidget {
   const BmiSlider({
@@ -115,6 +114,41 @@ class BmiSlider extends StatelessWidget {
           min: sliderMin,
           onChanged: (double value) { onChange(value); },
         )
+      ],
+    );
+  }
+}
+
+class BmiResult extends StatelessWidget {
+  const BmiResult({super.key,
+    required this.color,
+    required this.bmi,
+    required this.status
+  });
+  final Color color;
+  final double bmi;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+          AnimatedContainer(
+            duration: const Duration(microseconds: 500),
+            alignment: Alignment.center,
+            width: 160,
+            height: 160,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: color,width: 10)
+            ),
+            child: Text(bmi.toStringAsFixed(1),style: textValueStyle.copyWith(fontSize: 60),),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(status,style: resultTextStyle,),
+          )
       ],
     );
   }
