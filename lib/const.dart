@@ -18,6 +18,7 @@ const resultTextStyle = TextStyle(
 );
 
 abstract final class BMI{
+  static const String normal = 'Normal';
   static const String underWeightSevere = 'Underweight (Severe thinness)';
   static const String underWeightModerate = 'Underweight (Moderate thinness)';
   static const String underWeightMild = 'Underweight (Mild thinness)';

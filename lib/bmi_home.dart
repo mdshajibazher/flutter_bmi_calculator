@@ -18,6 +18,48 @@ class _BmiHomeState extends State{
 
   @override
 
+  _updateBmi(){
+    bmi = weightValue / (heightValue * heightValue);
+    _updateStatus();
+  }
+
+  _updateStatus(){
+    status = _getStatusAndColor()['text'];
+  }
+
+  _getStatusAndColor(){
+      if(bmi < 16.0){
+        return {'text' : BMI.underWeightSevere, 'color': Colors.green.shade100};
+      }
+      else if(bmi >= 16.0 && bmi <= 16.9){
+        return  {'text' : BMI.underWeightModerate, 'color': Colors.green.shade200};
+      }
+      else if(bmi >= 17.0 && bmi <= 18.4){
+        return {'text' :  BMI.underWeightModerate, 'color': Colors.green.shade300};
+      }
+      else if(bmi >= 18.5 && bmi <= 24.9){
+        return {'text' : BMI.normal, 'color': Colors.green};
+      }
+      else if(bmi >= 25.0 && bmi <= 29.9){
+        return {'text' :  BMI.OverweightPreObese, 'color': Colors.red.shade400};
+      }
+      else if(bmi >= 30.0 && bmi <= 34.9){
+        return {'text' :  BMI.ObeseClass1 , 'color': Colors.red.shade500};
+      }
+      else if(bmi >= 35.0 && bmi <= 39.9){
+        return {'text' : BMI.ObeseClass2 , 'color': Colors.red.shade700};
+      }else{
+        return {'text' : BMI.ObeseClass3 , 'color': Colors.red.shade900};
+      }
+  }
+
+  @override
+  void initState() {
+    _updateBmi();
+    // TODO: implement initState
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue,
@@ -37,6 +79,7 @@ class _BmiHomeState extends State{
                 setState(() {
                   heightValue = newValue;
                 });
+                _updateBmi();
               }
           ),
           BmiSlider(
@@ -50,9 +93,10 @@ class _BmiHomeState extends State{
                 setState(() {
                   weightValue = newValue;
                 });
+                _updateBmi();
               }
           ),
-          Expanded( child: BmiResult(color: color,bmi: bmi,status: status,)),
+          Expanded( child: BmiResult(color: _getStatusAndColor()['color'],bmi: bmi,status: status,)),
         ],
       ),
     );
