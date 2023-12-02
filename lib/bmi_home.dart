@@ -1,7 +1,9 @@
 
+import 'package:bmi_calculator/bmi_provider.dart';
 import 'package:bmi_calculator/const.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BmiHome extends StatefulWidget {
   const BmiHome({super.key});
@@ -10,55 +12,10 @@ class BmiHome extends StatefulWidget {
 }
 
 class _BmiHomeState extends State{
-  double heightValue = 1.5;
-  double weightValue = 30;
-  String status = '';
-  double bmi = 0.0;
-  Color color = Colors.green;
 
   @override
 
-  _updateBmi(){
-    bmi = weightValue / (heightValue * heightValue);
-    _updateStatus();
-  }
 
-  _updateStatus(){
-    status = _getStatusAndColor()['text'];
-  }
-
-  _getStatusAndColor(){
-      if(bmi < 16.0){
-        return {'text' : BMI.underWeightSevere, 'color': Colors.green.shade100};
-      }
-      else if(bmi >= 16.0 && bmi <= 16.9){
-        return  {'text' : BMI.underWeightModerate, 'color': Colors.green.shade200};
-      }
-      else if(bmi >= 17.0 && bmi <= 18.4){
-        return {'text' :  BMI.underWeightModerate, 'color': Colors.green.shade300};
-      }
-      else if(bmi >= 18.5 && bmi <= 24.9){
-        return {'text' : BMI.normal, 'color': Colors.green};
-      }
-      else if(bmi >= 25.0 && bmi <= 29.9){
-        return {'text' :  BMI.OverweightPreObese, 'color': Colors.red.shade400};
-      }
-      else if(bmi >= 30.0 && bmi <= 34.9){
-        return {'text' :  BMI.ObeseClass1 , 'color': Colors.red.shade500};
-      }
-      else if(bmi >= 35.0 && bmi <= 39.9){
-        return {'text' : BMI.ObeseClass2 , 'color': Colors.red.shade700};
-      }else{
-        return {'text' : BMI.ObeseClass3 , 'color': Colors.red.shade900};
-      }
-  }
-
-  @override
-  void initState() {
-    _updateBmi();
-    // TODO: implement initState
-    super.initState();
-  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,35 +25,39 @@ class _BmiHomeState extends State{
       ),
       body: Column(
         children: [
-          BmiSlider(
-              label: 'Height',
-              unit: BmiUnit.m,
-              sliderValue: heightValue,
-              sliderDivision: 100,
-              sliderMin: 1.2,
-              sliderMax: 2.2,
-              onChange: (newValue) {
-                setState(() {
-                  heightValue = newValue;
-                });
-                _updateBmi();
-              }
+
+          Consumer <BmiProvider>(
+            builder: (BuildContext context, provider, Widget? child) => BmiSlider(
+                label: 'Height',
+                unit: BmiUnit.m,
+                sliderValue: provider.heightValue,
+                sliderDivision: 100,
+                sliderMin: 1.2,
+                sliderMax: 2.2,
+                onChange: (newValue) {
+                    provider.changeHeight(newValue);
+                }
+          )
           ),
-          BmiSlider(
-              label: 'Weight',
-              unit: BmiUnit.kg,
-              sliderValue: weightValue,
-              sliderDivision: 200,
-              sliderMin: 30,
-              sliderMax: 100,
-              onChange: (newValue) {
-                setState(() {
-                  weightValue = newValue;
-                });
-                _updateBmi();
-              }
+          Consumer <BmiProvider>(
+              builder: (BuildContext context, provider, Widget? child) => BmiSlider(
+                  label: 'Weight',
+                  unit: BmiUnit.kg,
+                  sliderValue: provider.weightValue,
+                  sliderDivision: 200,
+                  sliderMin: 30,
+                  sliderMax: 100,
+                  onChange: (newValue) {
+                    provider.changeWeight(newValue);
+                  }
+              )
           ),
-          Expanded( child: BmiResult(color: _getStatusAndColor()['color'],bmi: bmi,status: status,)),
+          Expanded( child:
+          Consumer <BmiProvider>(
+              builder: (BuildContext context, provider, Widget? child) =>
+              BmiResult(color: provider.getStatusAndColor()['color'],bmi: provider.bmi,status: provider.status)
+            )
+          ),
         ],
       ),
     );
